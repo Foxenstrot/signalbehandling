@@ -9,7 +9,7 @@ import numpy as np
 
 sample_rate = 48000
 starting_tone = 0
-no_of_harmonics = 3
+no_of_harmonics = 8
 a_coeff_mult = 0.99
 freq = 230
 fs_div2 = sample_rate/2 
@@ -68,7 +68,7 @@ def calc_coeff(sample_rate, tone, fundamental_tone, no_of_harmonics, a_coeff_mul
                 a_coeff_mult -= 0.05
                      
             calc_coeff(sample_rate, tone, fundamental_tone, no_of_harmonics, a_coeff_mult)
-            print(f' N = {tone-1} b0= {b_coeff[0]} b1= {b_coeff[1]} b2= {b_coeff[2]} a0= 1 a1= {a_coeff[1]} a2= {a_coeff[2]})')
+            print(f'Frequency: {freq*tone} | A_Mult: {a_coeff_mult} | N = {tone-1} | \nb0= {b_coeff[0]} | b1= {b_coeff[1]} | b2= {b_coeff[2]} | a0= 1 | a1= {a_coeff[1]} | a2= {a_coeff[2]})')
       
         return
         
@@ -77,4 +77,6 @@ print(f'')
 print(f'')
 print(f'')
 calc_coeff_audacity(sample_rate, starting_tone, freq, no_of_harmonics-1, a_coeff_mult)
+print(f'')
+print(f'')
 calc_coeff(sample_rate, starting_tone, freq, no_of_harmonics, a_coeff_mult)
