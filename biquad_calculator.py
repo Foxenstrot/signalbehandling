@@ -49,7 +49,7 @@ def calc_coeff_audacity_manual(sample_rate, tone, fundamental_tone, no_of_harmon
                 real = np.cos(rad_of_freq)
                 imag = np.sin(rad_of_freq)      
                 b_coeff = [real+(imag*1j), real-(imag*1j)]
-                a_coeff = [(real*a_coeff_mult_list[int(tone)])+(imag*1j), 
+                a_coeff = [(real*a_coeff_mult_list[tone])+(imag*1j), 
                            (real*a_coeff_mult_list[tone])-(imag*1j)]
                 
                 a_coeff = np.poly(a_coeff)
@@ -90,7 +90,28 @@ def calc_coeff_audacity(sample_rate, tone, fundamental_tone, no_of_harmonics, a_
             print(f' {b_coeff[0]} {b_coeff[1]} {b_coeff[2]} 1 {a_coeff[1]} {a_coeff[2]})', end='')
             
         return
+
+def calc_coeff_manual(sample_rate, tone, fundamental_tone, no_of_harmonics, a_coeff_mult_list): 
+    while True:
         
+             
+        if tone < no_of_harmonics+1:
+            harmonic = fundamental_tone*(tone+1)
+            angle_of_freq = (harmonic/fs_div2) * 180
+            rad_of_freq = angle_of_freq * np.pi/180
+            real = np.cos(rad_of_freq)
+            imag = np.sin(rad_of_freq)      
+            b_coeff = [real+(imag*1j), real-(imag*1j)]
+            a_coeff = [(real*a_coeff_mult_list[tone])+(imag*1j), 
+                       (real*a_coeff_mult_list[tone])-(imag*1j)]
+            a_coeff = np.poly(a_coeff)
+            b_coeff = np.poly(b_coeff)
+            tone += 1
+            calc_coeff_manual(sample_rate, tone, fundamental_tone, no_of_harmonics, a_coeff_mult_list)
+            print(f'Frequency: {freq*tone} | A_Mult: {a_coeff_mult_list[tone-1]} | N = {tone-1} | \nb0= {b_coeff[0]} | b1= {b_coeff[1]} | b2= {b_coeff[2]} | a0= 1 | a1= {a_coeff[1]} | a2= {a_coeff[2]})')
+      
+        return  
+
 def calc_coeff(sample_rate, tone, fundamental_tone, no_of_harmonics, a_coeff_mult): 
     while True:
         harmonic = fundamental_tone*(tone+1)
@@ -139,5 +160,8 @@ if audacity.lower() == "y" or audacity.lower == "yes":
 else:
     print(f'')
     print(f'')
-    calc_coeff(sample_rate, starting_tone, freq, no_of_harmonics, a_coeff_mult) 
+    if a_coeff_mult_choice.lower() == "n" or a_coeff_mult_choice.lower() == "no":
+        calc_coeff_manual(sample_rate, starting_tone, freq, no_of_harmonics, a_coeff_mult_list)
+    else:
+        calc_coeff(sample_rate, starting_tone, freq, no_of_harmonics, a_coeff_mult) 
     print(f'\n')   
